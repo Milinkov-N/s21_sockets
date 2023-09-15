@@ -35,10 +35,11 @@ set(
     SOURCES
     ${PUB_HEADERS}
     src/socklib.cc
+    src/ws2.cc
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
-target_link_libraries(${PROJECT_NAME} PUBLIC CompilerFlags ws2_32)
+target_link_libraries(${PROJECT_NAME} PUBLIC ws2_32 PRIVATE CompilerFlags)
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
