@@ -1,0 +1,8 @@
+# Visual Studio
+.vs
+.vscode
+
+# Build Directories
+bld/
+build/
+out/
