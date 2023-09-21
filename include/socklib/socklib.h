@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string_view>
+#include <vector>
 
 #include "socklib/ws2.h"
 
@@ -80,7 +81,7 @@ enum class Flags {
 /* The address family. Possible values for the address family are defined in the
  * Winsock2.h header file.
  */
-enum class AddrFamily {
+enum class Family {
   /* The address family is unspecified. */
   Unset = AF_UNSPEC,
 
@@ -106,7 +107,7 @@ enum class AddrFamily {
   Bluetooth = AF_BTH,
 };
 
-enum class SocketType {
+enum class Type {
   /* Provides sequenced, reliable, two-way, connection-based byte streams with
    * an OOB data transmission mechanism. Uses the Transmission Control Protocol
    * (TCP) for the Internet address family (`AF_INET` or `AF_INET6`). If the
@@ -136,7 +137,7 @@ enum class SocketType {
   SeqPacket = SOCK_SEQPACKET,
 };
 
-enum class IpProtocol {
+enum class Proto {
   /* The Transmission Control Protocol (TCP). This is a possible value when the
    * `ai_family` member is `AF_INET` or `AF_INET6` and the ai_socktype member is
    * `SOCK_STREAM`.
@@ -153,24 +154,26 @@ enum class IpProtocol {
 class SockAddr {
  public:
   SockAddr();
-  SockAddr(AddrFamily, std::string_view, uint16_t);
+  SockAddr(Family, std::string_view, uint16_t);
   SockAddr(const SockAddr&) = default;
-  SockAddr& operator=(const SockAddr&) = default;
   SockAddr(SockAddr&&) = default;
-  SockAddr& operator=(SockAddr&&) = default;
   ~SockAddr();
 
  public:
-  inline AddrFamily family() const { return family_; }
+  SockAddr& operator=(const SockAddr&) = default;
+  SockAddr& operator=(SockAddr&&) = default;
+
+ public:
+  inline Family family() const { return family_; }
   inline std::string_view addr() const { return addr_; }
 
-  /* @returns `unsigned short` of port parsed with `htons()` function  */
+  /* @returns `unsigned short` of port value parsed with `htons()` function  */
   inline uint16_t port() const { return htons(port_); }
 
   struct sockaddr_in sockaddr_in() const;
 
  private:
-  AddrFamily family_;
+  Family family_;
   std::string_view addr_;
   uint16_t port_;
 };
@@ -178,10 +181,33 @@ class SockAddr {
 class Socket {
  public:
   Socket();
-  Socket(SockAddr);
+  Socket(Family, Type, Proto = Proto::Tcp);
+  Socket(const Socket&) = delete;
+  Socket(Socket&&) noexcept;
   ~Socket();
 
+ public:
+  Socket& operator=(const Socket&) = delete;
+  Socket& operator=(Socket&&) noexcept;
+
+ public:
+  void bind(SockAddr);
+  void connect(SockAddr);
+  void listen(int = SOMAXCONN);
+  [[nodiscard]] Socket accept();
+  std::vector<uint8_t> recieve(size_t);
+  int send(std::string_view);
+
+ public:
+  bool is_valid() const;
+
  private:
-  SockAddr sock_addr_;
+  Socket(SOCKET);
+
+  void shutdown();
+
+ private:
+  SOCKET sd_{INVALID_SOCKET};
+  bool connected_{false};
 };
 }  // namespace sock
