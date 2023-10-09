@@ -10,11 +10,10 @@ Small and very simple abstraction of Winsock library. Made mostly for personal u
 #include <s21/socket.h>
 
 int main(void) {
-    s21::WS2Lib ws2; // initializing the winsock2 library
-    s21::Socket listener(s21::Family::Ipv4, s21::Type::Stream);
+    s21::socket listener(s21::ipv4, s21::stream);
 
     if (listener.is_valid()) {
-        listener.bind(s21::SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
+        listener.bind(s21::SockAddr(s21::ipv4, "127.0.0.1", 3000));
         listener.listen();
 
         auto conn = listener.accept();

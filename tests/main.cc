@@ -5,66 +5,59 @@
 
 #include "s21/socket.h"
 
-using s21::SockAddr;
-
 TEST(Socket, Constructor) {
-  s21::WS2Lib ws2;
-  s21::Socket sock(s21::Family::Ipv4, s21::Type::Stream);
+  s21::socket sock(s21::ipv4, s21::stream);
 
   ASSERT_EQ(sock.is_valid(), true);
 }
 
 TEST(Socket, Bind) {
-  s21::WS2Lib ws2;
-  s21::Socket sock(s21::Family::Ipv4, s21::Type::Stream);
+  s21::socket sock(s21::ipv4, s21::stream);
 
-  sock.bind(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
+  sock.bind("127.0.0.1", 3000);
 
   ASSERT_EQ(sock.is_valid(), true);
 }
 
 TEST(Socket, ListenAndConnect) {
-  s21::WS2Lib ws2;
-  s21::Socket listener(s21::Family::Ipv4, s21::Type::Stream);
+  s21::socket listener(s21::ipv4, s21::stream);
 
-  listener.bind(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
+  listener.bind("127.0.0.1", 3000);
   listener.listen();
 
   std::jthread([]() {
-    s21::Socket client(s21::Family::Ipv4, s21::Type::Stream);
+    s21::socket client(s21::ipv4, s21::stream);
 
-    client.connect(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
+    client.connect("127.0.0.1", 3000);
   }).join();
 }
 
 TEST(Socket, Accept) {
-  s21::WS2Lib ws2;
-  s21::Socket listener(s21::Family::Ipv4, s21::Type::Stream);
+  s21::socket listener(s21::ipv4, s21::stream);
 
-  listener.bind(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
+  listener.bind("127.0.0.1", 3000);
   listener.listen();
 
   std::jthread([]() {
-    s21::Socket client(s21::Family::Ipv4, s21::Type::Stream);
+    s21::socket client(s21::ipv4, s21::stream);
 
-    client.connect(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
+    client.connect("127.0.0.1", 3000);
   }).join();
 
   auto conn = listener.accept();
 }
 
 TEST(Socket, RecieveAndSend) {
-  s21::WS2Lib ws2;
-  s21::Socket listener(s21::Family::Ipv4, s21::Type::Stream);
+  s21::socket listener(s21::ipv4, s21::stream);
   constexpr auto payload = "Some bytes";
 
-  listener.bind(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
+  listener.bind("127.0.0.1", 3000);
   listener.listen();
 
   std::jthread([]() {
-    s21::Socket client(s21::Family::Ipv4, s21::Type::Stream);
+    s21::socket client(s21::ipv4, s21::stream);
 
-    client.connect(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
+    client.connect("127.0.0.1", 3000);
     client.send(payload);
   }).join();
 
