@@ -35,7 +35,6 @@ set(
     SOURCES
     ${PUB_HEADERS}
     src/socket.cc
-    src/ws2.cc
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})

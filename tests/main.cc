@@ -8,14 +8,12 @@
 using s21::SockAddr;
 
 TEST(Socket, Constructor) {
-  s21::WS2Lib ws2;
   s21::Socket sock(s21::Family::Ipv4, s21::Type::Stream);
 
   ASSERT_EQ(sock.is_valid(), true);
 }
 
 TEST(Socket, Bind) {
-  s21::WS2Lib ws2;
   s21::Socket sock(s21::Family::Ipv4, s21::Type::Stream);
 
   sock.bind(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
@@ -24,7 +22,6 @@ TEST(Socket, Bind) {
 }
 
 TEST(Socket, ListenAndConnect) {
-  s21::WS2Lib ws2;
   s21::Socket listener(s21::Family::Ipv4, s21::Type::Stream);
 
   listener.bind(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
@@ -38,7 +35,6 @@ TEST(Socket, ListenAndConnect) {
 }
 
 TEST(Socket, Accept) {
-  s21::WS2Lib ws2;
   s21::Socket listener(s21::Family::Ipv4, s21::Type::Stream);
 
   listener.bind(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
@@ -54,7 +50,6 @@ TEST(Socket, Accept) {
 }
 
 TEST(Socket, RecieveAndSend) {
-  s21::WS2Lib ws2;
   s21::Socket listener(s21::Family::Ipv4, s21::Type::Stream);
   constexpr auto payload = "Some bytes";
 

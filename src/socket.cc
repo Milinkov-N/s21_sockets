@@ -2,6 +2,28 @@
 
 #include <system_error>
 
+struct WS2Lib {
+ public:
+  WS2Lib() {
+    WSADATA wsa_data{0};
+    int result = WSAStartup(WINSOCK_VERSION, &wsa_data);
+    if (result != 0)
+      throw std::system_error(WSAGetLastError(), std::system_category());
+  }
+
+  WS2Lib(const WS2Lib&) = delete;
+
+  WS2Lib(WS2Lib&&) = delete;
+
+  ~WS2Lib() { WSACleanup(); }
+
+  WS2Lib& operator=(const WS2Lib&) = delete;
+
+  WS2Lib& operator=(WS2Lib&&) = delete;
+};
+
+static const WS2Lib WS2_;
+
 s21::SockAddr::SockAddr() {}
 s21::SockAddr::SockAddr(Family family, std::string_view addr, uint16_t port)
     : family_(family), addr_(addr), port_(port) {}

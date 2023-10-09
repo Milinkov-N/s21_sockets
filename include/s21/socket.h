@@ -1,10 +1,11 @@
 #pragma once
 
+#include <winsock2.h>
+#include <ws2tcpip.h>
+
 #include <cstdint>
 #include <string_view>
 #include <vector>
-
-#include "s21/ws2.h"
 
 namespace s21 {
 
