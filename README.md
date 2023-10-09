@@ -13,7 +13,7 @@ int main(void) {
     s21::socket listener(s21::ipv4, s21::stream);
 
     if (listener.is_valid()) {
-        listener.bind(s21::SockAddr(s21::ipv4, "127.0.0.1", 3000));
+        listener.bind("127.0.0.1", 3000);
         listener.listen();
 
         auto conn = listener.accept();
