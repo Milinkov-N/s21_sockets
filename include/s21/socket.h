@@ -82,7 +82,7 @@ enum flags {
 /* The address family. Possible values for the address family are defined in the
  * Winsock2.h header file.
  */
-enum family {
+enum family : uint16_t {
   /* The address family is unspecified. */
   unset = AF_UNSPEC,
 
@@ -152,42 +152,15 @@ enum protocol {
   udp = IPPROTO_UDP,
 };
 
-class SockAddr {
- public:
-  SockAddr();
-  SockAddr(family, std::string_view, uint16_t);
-  SockAddr(const SockAddr&) = default;
-  SockAddr(SockAddr&&) = default;
-  ~SockAddr();
-
- public:
-  SockAddr& operator=(const SockAddr&) = default;
-  SockAddr& operator=(SockAddr&&) = default;
-
- public:
-  inline family family() const { return family_; }
-  inline std::string_view addr() const { return addr_; }
-
-  /* @returns `unsigned short` of port value parsed with `htons()` function  */
-  inline uint16_t port() const { return htons(port_); }
-
-  struct sockaddr_in sockaddr_in() const;
-
- private:
-  s21::family family_;
-  std::string_view addr_;
-  uint16_t port_;
-};
-
 class socket {
  public:
-  using Family = s21::family;
-  using Type = s21::type;
-  using Protocol = s21::protocol;
+  using Family = family;
+  using Type = type;
+  using Protocol = protocol;
 
  public:
   socket();
-  socket(s21::family, type, protocol = tcp);
+  socket(family, type, protocol = tcp);
   socket(const socket&) = delete;
   socket(socket&&) noexcept;
   ~socket();
@@ -197,8 +170,8 @@ class socket {
   socket& operator=(socket&&) noexcept;
 
  public:
-  void bind(SockAddr);
-  void connect(SockAddr);
+  void bind(std::string_view, uint16_t, family = ipv4);
+  void connect(std::string_view, uint16_t, family = ipv4);
   void listen(int = SOMAXCONN);
   [[nodiscard]] socket accept();
   std::vector<uint8_t> recieve(size_t);

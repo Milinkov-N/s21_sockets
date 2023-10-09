@@ -5,8 +5,6 @@
 
 #include "s21/socket.h"
 
-using s21::SockAddr;
-
 TEST(Socket, Constructor) {
   s21::socket sock(s21::ipv4, s21::stream);
 
@@ -16,7 +14,7 @@ TEST(Socket, Constructor) {
 TEST(Socket, Bind) {
   s21::socket sock(s21::ipv4, s21::stream);
 
-  sock.bind(SockAddr(s21::ipv4, "127.0.0.1", 3000));
+  sock.bind("127.0.0.1", 3000);
 
   ASSERT_EQ(sock.is_valid(), true);
 }
@@ -24,26 +22,26 @@ TEST(Socket, Bind) {
 TEST(Socket, ListenAndConnect) {
   s21::socket listener(s21::ipv4, s21::stream);
 
-  listener.bind(SockAddr(s21::ipv4, "127.0.0.1", 3000));
+  listener.bind("127.0.0.1", 3000);
   listener.listen();
 
   std::jthread([]() {
     s21::socket client(s21::ipv4, s21::stream);
 
-    client.connect(SockAddr(s21::ipv4, "127.0.0.1", 3000));
+    client.connect("127.0.0.1", 3000);
   }).join();
 }
 
 TEST(Socket, Accept) {
   s21::socket listener(s21::ipv4, s21::stream);
 
-  listener.bind(SockAddr(s21::ipv4, "127.0.0.1", 3000));
+  listener.bind("127.0.0.1", 3000);
   listener.listen();
 
   std::jthread([]() {
     s21::socket client(s21::ipv4, s21::stream);
 
-    client.connect(SockAddr(s21::ipv4, "127.0.0.1", 3000));
+    client.connect("127.0.0.1", 3000);
   }).join();
 
   auto conn = listener.accept();
@@ -53,13 +51,13 @@ TEST(Socket, RecieveAndSend) {
   s21::socket listener(s21::ipv4, s21::stream);
   constexpr auto payload = "Some bytes";
 
-  listener.bind(SockAddr(s21::ipv4, "127.0.0.1", 3000));
+  listener.bind("127.0.0.1", 3000);
   listener.listen();
 
   std::jthread([]() {
     s21::socket client(s21::ipv4, s21::stream);
 
-    client.connect(SockAddr(s21::ipv4, "127.0.0.1", 3000));
+    client.connect("127.0.0.1", 3000);
     client.send(payload);
   }).join();
 

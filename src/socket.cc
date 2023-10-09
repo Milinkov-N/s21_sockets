@@ -2,7 +2,7 @@
 
 #include <system_error>
 
-struct WS2Lib {
+static const struct WS2Lib {
  public:
   WS2Lib() {
     WSADATA wsa_data{0};
@@ -20,23 +20,7 @@ struct WS2Lib {
   WS2Lib& operator=(const WS2Lib&) = delete;
 
   WS2Lib& operator=(WS2Lib&&) = delete;
-};
-
-static const WS2Lib WS2_;
-
-s21::SockAddr::SockAddr() {}
-s21::SockAddr::SockAddr(s21::family f, std::string_view addr, uint16_t port)
-    : family_(f), addr_(addr), port_(port) {}
-
-struct sockaddr_in s21::SockAddr::sockaddr_in() const {
-  struct sockaddr_in service = {0};
-  service.sin_family = AF_INET;
-  service.sin_port = htons(port_);
-  inet_pton(family_, addr_.data(), &service.sin_addr.s_addr);
-  return service;
-}
-
-s21::SockAddr::~SockAddr() {}
+} WS2_;
 
 s21::socket::socket() {}
 
@@ -56,16 +40,28 @@ s21::socket& s21::socket::operator=(socket&& rhs) noexcept {
   return *this;
 }
 
-void s21::socket::bind(SockAddr addr) {
-  auto service = addr.sockaddr_in();
-  int res = ::bind(sd_, (const sockaddr*)&service, sizeof(service));
+void s21::socket::bind(std::string_view name, uint16_t port, family af) {
+  sockaddr_in service{0};
+
+  service.sin_family = af;
+  inet_pton(af, name.data(), &service.sin_addr.s_addr);
+  service.sin_port = port;
+
+  int res =
+      ::bind(sd_, reinterpret_cast<const sockaddr*>(&service), sizeof(service));
   if (res == SOCKET_ERROR)
     throw std::system_error(WSAGetLastError(), std::system_category());
 }
 
-void s21::socket::connect(SockAddr addr) {
-  auto service = addr.sockaddr_in();
-  int res = ::connect(sd_, (const sockaddr*)&service, sizeof(service));
+void s21::socket::connect(std::string_view name, uint16_t port, family af) {
+  sockaddr_in service{0};
+
+  service.sin_family = af;
+  inet_pton(af, name.data(), &service.sin_addr.s_addr);
+  service.sin_port = port;
+
+  int res = ::connect(sd_, reinterpret_cast<const sockaddr*>(&service),
+                      sizeof(service));
   if (res == SOCKET_ERROR)
     throw std::system_error(WSAGetLastError(), std::system_category());
 }
