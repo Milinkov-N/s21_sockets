@@ -3,68 +3,68 @@
 #include <string>
 #include <thread>
 
-#include "socklib/socklib.h"
+#include "s21/socket.h"
 
-using sock::SockAddr;
+using s21::SockAddr;
 
 TEST(Socket, Constructor) {
-  sock::WS2Lib ws2;
-  sock::Socket sock(sock::Family::Ipv4, sock::Type::Stream);
+  s21::WS2Lib ws2;
+  s21::Socket sock(s21::Family::Ipv4, s21::Type::Stream);
 
   ASSERT_EQ(sock.is_valid(), true);
 }
 
 TEST(Socket, Bind) {
-  sock::WS2Lib ws2;
-  sock::Socket sock(sock::Family::Ipv4, sock::Type::Stream);
+  s21::WS2Lib ws2;
+  s21::Socket sock(s21::Family::Ipv4, s21::Type::Stream);
 
-  sock.bind(SockAddr(sock::Family::Ipv4, "127.0.0.1", 3000));
+  sock.bind(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
 
   ASSERT_EQ(sock.is_valid(), true);
 }
 
 TEST(Socket, ListenAndConnect) {
-  sock::WS2Lib ws2;
-  sock::Socket listener(sock::Family::Ipv4, sock::Type::Stream);
+  s21::WS2Lib ws2;
+  s21::Socket listener(s21::Family::Ipv4, s21::Type::Stream);
 
-  listener.bind(SockAddr(sock::Family::Ipv4, "127.0.0.1", 3000));
+  listener.bind(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
   listener.listen();
 
   std::jthread([]() {
-    sock::Socket client(sock::Family::Ipv4, sock::Type::Stream);
+    s21::Socket client(s21::Family::Ipv4, s21::Type::Stream);
 
-    client.connect(SockAddr(sock::Family::Ipv4, "127.0.0.1", 3000));
+    client.connect(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
   }).join();
 }
 
 TEST(Socket, Accept) {
-  sock::WS2Lib ws2;
-  sock::Socket listener(sock::Family::Ipv4, sock::Type::Stream);
+  s21::WS2Lib ws2;
+  s21::Socket listener(s21::Family::Ipv4, s21::Type::Stream);
 
-  listener.bind(SockAddr(sock::Family::Ipv4, "127.0.0.1", 3000));
+  listener.bind(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
   listener.listen();
 
   std::jthread([]() {
-    sock::Socket client(sock::Family::Ipv4, sock::Type::Stream);
+    s21::Socket client(s21::Family::Ipv4, s21::Type::Stream);
 
-    client.connect(SockAddr(sock::Family::Ipv4, "127.0.0.1", 3000));
+    client.connect(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
   }).join();
 
   auto conn = listener.accept();
 }
 
 TEST(Socket, RecieveAndSend) {
-  sock::WS2Lib ws2;
-  sock::Socket listener(sock::Family::Ipv4, sock::Type::Stream);
+  s21::WS2Lib ws2;
+  s21::Socket listener(s21::Family::Ipv4, s21::Type::Stream);
   constexpr auto payload = "Some bytes";
 
-  listener.bind(SockAddr(sock::Family::Ipv4, "127.0.0.1", 3000));
+  listener.bind(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
   listener.listen();
 
   std::jthread([]() {
-    sock::Socket client(sock::Family::Ipv4, sock::Type::Stream);
+    s21::Socket client(s21::Family::Ipv4, s21::Type::Stream);
 
-    client.connect(SockAddr(sock::Family::Ipv4, "127.0.0.1", 3000));
+    client.connect(SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
     client.send(payload);
   }).join();
 

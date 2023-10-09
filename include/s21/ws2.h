@@ -3,7 +3,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
-namespace sock {
+namespace s21 {
 class WS2Lib {
  public:
   using Self = WS2Lib;
@@ -26,4 +26,4 @@ class WS2Lib {
   WSADATA wsa_data_;
   Status status_;
 };
-}  // namespace sock
+}  // namespace s21

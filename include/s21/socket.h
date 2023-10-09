@@ -4,9 +4,9 @@
 #include <string_view>
 #include <vector>
 
-#include "socklib/ws2.h"
+#include "s21/ws2.h"
 
-namespace sock {
+namespace s21 {
 
 /* Flags that indicate options used in the `getaddrinfo()` function. */
 enum class Flags {
@@ -210,4 +210,4 @@ class Socket {
   SOCKET sd_{INVALID_SOCKET};
   bool connected_{false};
 };
-}  // namespace sock
+}  // namespace s21

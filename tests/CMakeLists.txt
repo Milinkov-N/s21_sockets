@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(SockLib-Tests)
+project(S21_Sockets-Tests)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -16,15 +16,15 @@ FetchContent_MakeAvailable(googletest)
 
 set(SOURCES main.cc)
 
-add_executable(SockLib-Tests)
-target_sources(SockLib-Tests PRIVATE ${SOURCES})
+add_executable(S21_Sockets-Tests)
+target_sources(S21_Sockets-Tests PRIVATE ${SOURCES})
 
 target_link_libraries(
-    SockLib-Tests
+    S21_Sockets-Tests
     PRIVATE
-    SockLib::SockLib
+    s21_sockets::s21_sockets
     gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(SockLib-Tests)
+gtest_discover_tests(S21_Sockets-Tests)

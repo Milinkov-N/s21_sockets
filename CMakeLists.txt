@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.21)
 
 project(
-    SockLib
+    s21_sockets
     VERSION 0.1.0
     DESCRIPTION "Small and easy to use Networking Library"
     LANGUAGES CXX
 )
 
-option(SOCKLIB_BUILD_TESTS "Build SockLib tests" OFF)
+option(S21_SOCKETS_BUILD_TESTS "Build S21 Sockets tests" OFF)
 # option(MYLIB_BUILD_EXAMPLES "Build mylib examples" OFF)
-option(SOCKLIB_INSTALL "Generate target for installing SockLib" OFF)
+option(S21_SOCKETS_INSTALL "Generate target for installing S21 Sockets" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -28,13 +28,13 @@ add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 set(
     PUB_HEADERS
-    include/socklib/socklib.h
+    include/s21/socket.h
 )
 
 set(
     SOURCES
     ${PUB_HEADERS}
-    src/socklib.cc
+    src/socket.cc
     src/ws2.cc
 )
 
@@ -58,7 +58,7 @@ set_target_properties(
     VERSION ${PROJECT_VERSION}
 )
 
-if(SOCKLIB_INSTALL AND NOT CMAKE_SKIP_INSTALL_RULES)
+if(S21_SOCKETS_INSTALL AND NOT CMAKE_SKIP_INSTALL_RULES)
     include(GNUInstallDirs)
 
     set_target_properties(
@@ -70,7 +70,7 @@ if(SOCKLIB_INSTALL AND NOT CMAKE_SKIP_INSTALL_RULES)
 
     install(
         TARGETS ${PROJECT_NAME} CompilerFlags
-        EXPORT SockLib_Exports
+        EXPORT S21_Sockets_Exports
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -80,35 +80,35 @@ if(SOCKLIB_INSTALL AND NOT CMAKE_SKIP_INSTALL_RULES)
     install(FILES ${PUB_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
     install(
-        EXPORT SockLib_Exports
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SockLib-${PROJECT_VERSION}
-        NAMESPACE SockLib::
+        EXPORT S21_Sockets_Exports
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}-${PROJECT_VERSION}
+        NAMESPACE s21_sockets::
     )
 
     include(CMakePackageConfigHelpers)
 
     configure_package_config_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SockLib-${PROJECT_VERSION}
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}_Config.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_Config.cmake"
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}-${PROJECT_VERSION}
     )
 
     write_basic_package_version_file(
-        "${PROJECT_NAME}ConfigVersion.cmake"
+        "${PROJECT_NAME}_ConfigVersion.cmake"
         VERSION ${PROJECT_VERSION}
         COMPATIBILITY SameMajorVersion
     )
 
     install(
         FILES
-          "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-          "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+          "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_Config.cmake"
+          "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_ConfigVersion.cmake"
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
     )
 
 endif()
 
-if(SOCKLIB_BUILD_TESTS)
+if(S21_SOCKETS_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()

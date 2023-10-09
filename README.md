@@ -1,4 +1,4 @@
-# SockLib
+# S21 Sockets
 
 Small and very simple abstraction of Winsock library. Made mostly for personal use.
 
@@ -7,14 +7,14 @@ Small and very simple abstraction of Winsock library. Made mostly for personal u
 ```cpp
 #include <iostream>
 #include <string>
-#include <socklib/socklib.h>
+#include <s21/socket.h>
 
 int main(void) {
-    sock::WS2Lib ws2; // initializing the winsock2 library
-    sock::Socket listener(sock::Family::Ipv4, sock::Type::Stream);
+    s21::WS2Lib ws2; // initializing the winsock2 library
+    s21::Socket listener(s21::Family::Ipv4, s21::Type::Stream);
 
     if (listener.is_valid()) {
-        listener.bind(sock::SockAddr(sock::Family::Ipv4, "127.0.0.1", 3000));
+        listener.bind(s21::SockAddr(s21::Family::Ipv4, "127.0.0.1", 3000));
         listener.listen();
 
         auto conn = listener.accept();
