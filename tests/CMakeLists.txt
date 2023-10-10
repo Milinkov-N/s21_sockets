@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.21)
 
 project(S21_Sockets-Tests)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 include(FetchContent)
 FetchContent_Declare(
     googletest
@@ -28,3 +31,4 @@ target_link_libraries(
 
 include(GoogleTest)
 gtest_discover_tests(S21_Sockets-Tests)
+add_test(S21_Sockets-Tests S21_Sockets-Tests)
