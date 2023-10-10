@@ -31,7 +31,9 @@ typedef int SOCKET;
 #endif
 
 #if _WIN32
+#pragma warning(disable : C4005)
 #define errno WSAGetLastError()
+#pragma warning(default : C4005)
 #endif
 
 namespace s21 {

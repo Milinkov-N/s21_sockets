@@ -1,5 +1,6 @@
 #include "s21/socket.h"
 
+#include <cstring>
 #include <system_error>
 #include <utility>
 
