@@ -2,17 +2,17 @@ cmake_minimum_required(VERSION 3.21)
 
 project(
     s21_sockets
-    VERSION 0.2.0
+    VERSION 0.3.0
     DESCRIPTION "Small and easy to use Networking Library"
     LANGUAGES CXX
 )
 
 option(S21_SOCKETS_BUILD_TESTS "Build S21 Sockets tests" OFF)
-# option(MYLIB_BUILD_EXAMPLES "Build mylib examples" OFF)
+# option(S21_SOCKETS_BUILD_EXAMPLES "Build mylib examples" OFF)
 option(S21_SOCKETS_INSTALL "Generate target for installing S21 Sockets" OFF)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(GCC_CXX "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
 set(MSVC_CXX "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
 
@@ -38,7 +38,12 @@ set(
 )
 
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
-target_link_libraries(${PROJECT_NAME} PUBLIC ws2_32 PRIVATE CompilerFlags)
+
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ws2_32)
+endif()
+
+target_link_libraries(${PROJECT_NAME} PRIVATE CompilerFlags)
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
